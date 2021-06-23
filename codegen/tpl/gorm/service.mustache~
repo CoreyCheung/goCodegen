@@ -1,0 +1,49 @@
+package service {{#HasNumPKOrLong}}
+
+import(
+ "{{CommonPackagePath}}"{{/HasNumPKOrLong}}{{#HasDatetimeColumn}}
+ "{{CommonPackagePath}}/date"{{/HasDatetimeColumn}}{{#HasTimeColumn}}
+ "time"{{/HasTimeColumn}}{{#HasProgramKey}}
+ "encoding/json"
+ "encoding/xml"{{/HasProgramKey}}
+ "out_project/entity"
+ "out_project/dto"
+ )
+
+// Created by CodeMachine on {{Time}}
+{{#HasComment}}
+// {{Comment}}
+{{/HasComment}}
+{{#Columns}}
+    {{#ColumnHasComment}}// {{ColumnComment}}
+    {{/ColumnHasComment}}{{/Columns}}
+func  Get{{CleanName}}(dto.ReqGet{{CleanName}})(dto.RespGet{{CleanName}},error,int) {
+    fmt.Println("req====",req)
+	data := dto.RespGet{{CleanName}}{}
+    whereSql:=""
+    selSql:=""
+    err:=entity.{{CleanName}}{}.Get(selSql,whereSql,&data)
+}
+func List{{CleanName}}(req dto.ReqList{{CleanName}})(dto.RespList{{CleanName}},error,int) {
+    fmt.Println("req====",req)
+	data := []dto.RespGet{{CleanName}}{}
+    whereSql:=""
+    selSql:=""
+    err:=entity.{{CleanName}}{}.List(selSql,whereSql,&data)
+}
+func Create{{CleanName}}(req dto.ReqCreate{{CleanName}})(error,int){
+    fmt.Println("req====",req)
+    err:=entity.{{CleanName}}{}.Create()
+}
+func  Update{{CleanName}}(req dto.ReqUpdate{{CleanName}})(error,int) {
+    fmt.Println("req====",req)
+    whereSql:=""
+    updateMap:=make(map[string]interface{})
+    err:=entity.{{CleanName}}{}.Update(whereSql,&updateMap)
+}
+
+func  Delete{{CleanName}}(req dto.ReqDelete{{CleanName}})(error,int){
+    fmt.Println("req====",req)
+    whereSql:=""
+    err:=entity.{{CleanName}}{}.Delete(whereSql)
+}

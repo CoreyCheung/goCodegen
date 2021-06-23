@@ -1,0 +1,26 @@
+from {{CommonPackagePath}} import BaseModel, db{{#HasProgramKey}}
+from app.common import snowflask{{/HasProgramKey}}
+
+class {{CleanName}}(BaseModel):
+    """
+    Created by CodeMachine on {{Time}}{{#HasComment}}
+    {{Comment}}{{/HasComment}}
+    """
+
+    __tablename__ = '{{Name}}'
+
+{{#Columns}}
+    {{#ColumnHasComment}}# {{ColumnComment}}{{/ColumnHasComment}}
+    {{^HasMultiKey}}{{#IsProgramKey}}_{{/IsProgramKey}}{{/HasMultiKey}}{{ColumnName}} = db.Column(db.{{PythonType}}({{#HasLength}}{{Length}}{{/HasLength}}{{GetNumericLength}}){{#IsNotNull}}, nullable=False{{/IsNotNull}}{{^IsNotNull}}, nullable=True{{/IsNotNull}}{{#IsPK}}, primary_key=True{{/IsPK}})
+{{/Columns}}
+{{#HasProgramKey}}
+
+    @property
+    def {{ProgramKeyNameLower}}(self):
+        if (!self._{{ProgramKeyNameLower}})
+            self._{{ProgramKeyNameLower}} = snowflask.next_id()
+        return self._{{ProgramKeyNameLower}}
+
+    @{{ProgramKeyNameLower}}.setter
+    def {{ProgramKeyNameLower}}(self, {{ProgramKeyNameLower}}):
+        self._{{ProgramKeyNameLower}} = {{ProgramKeyNameLower}}{{/HasProgramKey}}

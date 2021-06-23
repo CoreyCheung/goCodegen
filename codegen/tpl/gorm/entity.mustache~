@@ -1,0 +1,90 @@
+package entity {{#HasNumPKOrLong}}
+
+improt(
+ "{{CommonPackagePath}}"{{/HasNumPKOrLong}}{{#HasDatetimeColumn}}
+ "{{CommonPackagePath}}/date"{{/HasDatetimeColumn}}{{#HasTimeColumn}}
+ "time"{{/HasTimeColumn}}{{#HasProgramKey}}
+ "encoding/json"
+ "encoding/xml"{{/HasProgramKey}}
+ "out_project/db"
+ )
+
+// Created by CodeMachine on {{Time}}
+{{#HasComment}}
+// {{Comment}}
+{{/HasComment}}type {{CleanName}} struct {
+{{#Columns}}
+    {{#ColumnHasComment}}// {{ColumnComment}}
+    {{/ColumnHasComment}}{{UpperName}} {{GoType}} `gorm:"{{#IsPK}}primary_key;{{/IsPK}}{{#IsAutoIncrement}}AUTO_INCREMENT;{{/IsAutoIncrement}}{{#IsNotNull}}not null;{{/IsNotNull}}column:{{ColumnName}};type:{{ColumnType}}{{#HasLength}};size:{{Length}}{{/HasLength}}" json:"{{LowerName}}{{#IsNotNum}},omitempty{{/IsNotNum}}"`
+{{/Columns}}}
+
+func ({{CleanName}}) TableName() string {
+	return "{{Name}}"
+}
+func (this {{CleanName}}) Get(selSql,whereSql string,resp interface{}) error {
+    if err := AppGormClient.Client.Model(this.TableName).
+		Select(selSql).First(resp,whereSql).Error; err != nil {
+		return err
+	}
+	return nil
+}
+func (this {{CleanName}}) List(selSql,whereSql string,resp interface{}) error {
+    if err := AppGormClient.Client.Model(this.TableName).
+		Select(selSql).Find(resp,whereSql).Error; err != nil {
+		return err
+	}
+	return nil
+}
+func (this {{CleanName}}) Create() string {
+    if AppGormClient.Client.NewRecord(&this) {
+		if err := AppGormClient.Client.Create(&this).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
+func (this {{CleanName}}) Delete() string {
+	if err := AppGormClient.Client.Where(whereSql).Delete({{CleanName}}{}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func New{{CleanName}}() {{CleanName}} {
+    {{#HasProgramKey}}that := {{CleanName}}{}
+    that.GenId()
+    return that{{/HasProgramKey}}{{^HasProgramKey}}return {{CleanName}}{}{{/HasProgramKey}}
+}
+{{#HasProgramKey}}
+
+func (that *{{CleanName}}) GenId() {
+    that.{{ProgramKeyName}} = {{RefPackageName}}.NextId()
+}
+
+func (that *{{CleanName}}) UnmarshalJSON(value []byte) error { // 反序列化Json的时候，如果没有ID，自动给一个
+    type Alias {{CleanName}}
+    alias := &struct {
+        *Alias
+    }{Alias: (*Alias)(that)}
+    if err := json.Unmarshal(value, &alias); err != nil {
+        return err
+    }
+    if nil != alias && alias.ID == 0 {
+        alias.ID = {{RefPackageName}}.NextId()
+    }
+    return nil
+}
+
+func (that *{{CleanName}}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error { // 反序列化XML的时候，如果没有ID，自动给一个
+    type Alias {{CleanName}}
+    alias := &struct {
+        *Alias
+    }{Alias: (*Alias)(that)}
+    if err := d.DecodeElement(&alias, &start); err != nil {
+        return err
+    }
+    if nil != alias && alias.ID == 0 {
+    alias.ID = {{RefPackageName}}.NextId()
+    }
+    return nil
+}{{/HasProgramKey}}

@@ -1,0 +1,18 @@
+package {{PackageName}};
+
+import {{CommonPackagePath}}.dao.IMapper;
+import {{RefPackageName}}.{{CleanName}}Info;
+
+/**
+ * {{Comment}} 数据操作类
+ * 每个Entity生成一个对应的Mapper，基础的CRUD方法IMapper中已提供，此接口用于手工添加额外的数据操作方法
+ * @see {{CommonPackagePath}}.dao.jdbc.mybatis.BaseSqlClause 可继承此类用于SqlProvider生成查询语句
+ * @see {{CommonPackagePath}}.dao.DynamicSQL 也可使用此类生成查询语句
+ * @see {{CommonPackagePath}}.annotations.data.ParamToMap 此注解用于标示方法全部参数或者指定参数转换为Map
+ * 列表或数组转换成以下标为Key的Map，简单类型不转换，{{CommonPackagePath}}.beans.Sort[] 不转换
+ * 注解的isDeeper配置决定是否嵌套转换（即对象中某字段不是简单类型时继续将其转换成Map），配置缺省值为true
+ * Created by CodeMachine on {{Time}}.
+ */
+public interface I{{CleanName}}Mapper extends IMapper<{{CleanName}}Info> {
+
+}

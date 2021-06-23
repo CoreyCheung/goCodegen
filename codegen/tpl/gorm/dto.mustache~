@@ -1,0 +1,24 @@
+package dto
+import(
+ "{{CommonPackagePath}}"{{/HasNumPKOrLong}}{{#HasDatetimeColumn}}
+ "{{CommonPackagePath}}/date"{{/HasDatetimeColumn}}{{#HasTimeColumn}}
+ "time"{{/HasTimeColumn}}{{#HasProgramKey}}
+ "encoding/json"
+ "encoding/xml"{{/HasProgramKey}}
+ "out_project/db"
+ )
+
+// Created by CodeMachine on {{Time}}
+{{#HasComment}}
+// {{Comment}}
+{{/HasComment}}type ReqCreate{{CleanName}} struct {
+{{#Columns}}
+    {{#ColumnHasComment}}// {{ColumnComment}}
+    {{/ColumnHasComment}}{{UpperName}} {{GoType}} `json:"{{LowerName}}{{#IsNotNum}},omitempty{{/IsNotNum}}"`
+{{/Columns}}}
+type ReqGet{{CleanName}} struct {
+}
+type ReqList{{CleanName}} struct {
+}
+type ReqUpdate{{CleanName}} struct {
+}

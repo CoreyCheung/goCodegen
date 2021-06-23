@@ -1,0 +1,94 @@
+package {{PackageName}};
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import {{CommonPackagePath}}.annotations.data.*;
+import {{CommonPackagePath}}.keygen.ProgramKeyHelper;
+
+import java.time.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**{{#HasComment}}
+ * {{Comment}} 持久化对象类{{/HasComment}}
+ * Created by CodeMachine on {{Time}}.
+ */
+@Entity
+@Table(name = "{{Name}}")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class {{CleanName}} {
+{{#Columns}}
+    {{#ColumnHasComment}}/**
+    * {{ColumnComment}}
+    */
+    {{/ColumnHasComment}}{{#IsPK}}@Id
+    {{#IsAutoIncrement}}@Column(name = "{{ColumnName}}", unique = true, nullable = false, insertable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY){{/IsAutoIncrement}}{{^IsAutoIncrement}}@Column(name = "{{ColumnName}}", unique = true, nullable = false, updatable = false){{^HasMultiKey}}{{#IsProgramKey}}
+    @GeneratedValue(strategy = GenerationType.NONE){{/IsProgramKey}}{{/HasMultiKey}}{{/IsAutoIncrement}}{{/IsPK}}{{^IsPK}}@Column(name = "{{ColumnName}}"{{#IsNotNull}}, nullable = false{{/IsNotNull}}){{/IsPK}}
+    private {{JavaType}} {{LowerName}};
+
+{{/Columns}}
+{{#Columns}}
+    {{^HasMultiKey}}{{#IsProgramKey}}
+    /**
+    * 获取字段 {{ColumnComment}} 的值，程序生成主键
+    * @return {{ColumnComment}}值
+    */
+    public {{JavaType}} get{{GetTrimUpperName}}() {
+        if (null == ${col.getFieldName()}) {
+            this.${col.getFieldName()} = ProgramKeyHelper.getKey(${cleanName}.class);
+        }
+        return {{LowerName}};
+    }{{/IsProgramKey}}{{/HasMultiKey}}{{#HasMultiKey}}{{#IsProgramKey}}
+    /**
+    * 获取字段 {{ColumnComment}} 的值{{#IsPK}}，主键{{/IsPK}}
+    * @return {{ColumnComment}}值
+    */
+    public {{JavaType}} get{{GetTrimUpperName}}(){
+        return {{LowerName}};
+    }{{/IsProgramKey}}{{/HasMultiKey}}{{^HasMultiKey}}{{^IsProgramKey}}
+    /**
+    * 获取字段 {{ColumnComment}} 的值{{#IsPK}}，主键{{/IsPK}}
+    * @return {{ColumnComment}}值
+    */
+    public {{JavaType}} get{{GetTrimUpperName}}(){
+        return {{LowerName}};
+    }{{/IsProgramKey}}{{/HasMultiKey}}
+
+    /**
+    * 设置字段 {{ColumnComment}} 的值{{#IsPK}}，主键{{/IsPK}}{{#IsNotNull}} [必填]{{/IsNotNull}}
+    * @param {{LowerName}} {{ColumnComment}}值
+    */
+    public void set{{GetTrimUpperName}}({{JavaType}} {{LowerName}}){
+        this.{{LowerName}} = {{LowerName}};
+    }
+{{/Columns}}
+
+    @Override
+    // String之外的引用类型（如LocalDateTime）的Objects.equals会不一样，但持久化实体类的主键字段通常也不会是这些类型
+    public boolean equals(Object o) {
+        if(null == o || !(o instanceof {{CleanName}})) return false;
+
+        {{CleanName}} that = ({{CleanName}}) o;
+        boolean flag = true;
+        {{#Columns}}
+            {{#IsPK}}
+        if(!Objects.equals(get{{GetTrimUpperName}}(), that.get{{GetTrimUpperName}}()))
+            flag = false;
+            {{/IsPK}}
+        {{/Columns}}
+        return flag;
+    }
+
+    @Override
+    public int hashCode() {
+        List<String> hashLst = new ArrayList<>();
+        {{#Columns}}
+            {{#IsPK}}
+            hashLst.add(get{{GetTrimUpperName}}() != null ? String.valueOf(get{{GetTrimUpperName}}().hashCode()) : "0");
+            {{/IsPK}}
+        {{/Columns}}
+        return String.join("-", hashLst).hashCode();
+    }
+}

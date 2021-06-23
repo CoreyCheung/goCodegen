@@ -1,0 +1,152 @@
+package controller {{#HasNumPKOrLong}}
+
+
+import( 
+ "{{CommonPackagePath}}"{{/HasNumPKOrLong}}{{#HasDatetimeColumn}}
+ "{{CommonPackagePath}}/date"{{/HasDatetimeColumn}}{{#HasTimeColumn}}
+ "time"{{/HasTimeColumn}}{{#HasProgramKey}}
+ "encoding/json"
+ "encoding/xml"{{/HasProgramKey}}
+ "github.com/gin-gonic/gin"
+ "out_project/service"
+ "out_project/dto"
+ )
+
+// Created by CodeMachine on {{Time}}
+{{#HasComment}}
+// {{Comment}}
+{{/HasComment}}
+{{#Columns}}
+    {{#ColumnHasComment}}// {{ColumnComment}}
+    {{/ColumnHasComment}}{{/Columns}}
+func  Get{{CleanName}}(c gin.context) {
+	req := dto.ReqGet{{CleanName}}{}
+	resp :=db.Response{}
+	if err := c.BindJSON(&req); err != nil {
+		resp.Code = db.BadRequest
+		resp.Message = err.Error()
+		logrus.Infof("Get {{CleanName}} ==> resp:%+v",resp)
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	logrus.Info("访问Get {{CleanName}}，请求参数：")
+	logrus.Info(req)
+	data,err,code:= service.Get{{CleanName}}(req)
+	if err != nil || code != db.Success{
+		resp.Code = code
+		resp.Message = err.Error()
+		logrus.Infof("Get {{CleanName}} ==> resp:%+v",resp)
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	resp.Code = 0
+	resp.Message = "success"
+    resp.Data = data
+	logrus.Info("访问Get{{CleanName}}，响应结果：",resp)
+	c.JSON(http.StatusOK, resp)
+}
+func List{{CleanName}}(c gin.context) error {
+	req := dto.ReqList{{CleanName}}{}
+	resp :=db.Response{}
+	if err := c.BindJSON(&req); err != nil {
+		resp.Code = db.BadRequest
+		resp.Message = err.Error()
+		logrus.Infof("List {{CleanName}} ==> resp:%+v",resp)
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	logrus.Info("访问List{{CleanName}}，请求参数：")
+	logrus.Info(req)
+	data,err,code:= service.List{{CleanName}}(req)
+	if err != nil || code != db.Success{
+		resp.Code = code
+		resp.Message = err.Error()
+		logrus.Infof("List {{CleanName}} ==> resp:%+v",resp)
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	resp.Code = 0
+	resp.Message = "success"
+    resp.Data = data
+	logrus.Info("访问List{{CleanName}}，响应结果：",resp)
+	c.JSON(http.StatusOK, resp)
+}
+func Create{{CleanName}}() string {
+	req := dto.ReqCreate{{CleanName}}{}
+	resp :=db.Response{}
+	if err := c.BindJSON(&req); err != nil {
+		resp.Code = db.BadRequest
+		resp.Message = err.Error()
+		logrus.Infof("Create {{CleanName}} ==> resp:%+v",resp)
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	logrus.Info("访问Create{{CleanName}}，请求参数：")
+	logrus.Info(req)
+	err,code:= service.Create{{CleanName}}(req)
+	if err != nil || code != db.Success{
+		resp.Code = code
+		resp.Message = err.Error()
+		logrus.Infof("Create {{CleanName}} ==> resp:%+v",resp)
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	resp.Code = 0
+	resp.Message = "success"
+	logrus.Info("访问Create{{CleanName}}，响应结果：",resp)
+	c.JSON(http.StatusOK, resp)
+}
+func  Update{{CleanName}}() string {
+	req := dto.ReqUpdate{{CleanName}}{}
+	resp :=db.Response{}
+	if err := c.BindJSON(&req); err != nil {
+		resp.Code = db.BadRequest
+		resp.Message = err.Error()
+		logrus.Infof("Update {{CleanName}} ==> resp:%+v",resp)
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	logrus.Info("访问Update {{CleanName}}，请求参数：")
+	logrus.Info(req)
+	err,code:= service.Update{{CleanName}}(req)
+	if err != nil || code != db.Success{
+		resp.Code = code
+		resp.Message = err.Error()
+		logrus.Infof("Update {{CleanName}} ==> resp:%+v",resp)
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	resp.Code = 0
+	resp.Message = "success"
+	logrus.Info("访问Update {{CleanName}}，响应结果：",resp)
+	c.JSON(http.StatusOK, resp)
+}
+
+func  Delete{{CleanName}}() string {
+	req := dto.ReqDelete{{CleanName}}{}
+	resp :=db.Response{}
+	if err := c.BindJSON(&req); err != nil {
+		resp.Code = db.BadRequest
+		resp.Message = err.Error()
+		logrus.Infof("Delete {{CleanName}} ==> resp:%+v",resp)
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	logrus.Info("访问Delete{{CleanName}}，请求参数：")
+	logrus.Info(req)
+	err,code:= service.Delete{{CleanName}}(req)
+	if err != nil || code != db.Success{
+		resp.Code = code
+		resp.Message = err.Error()
+		logrus.Infof("Delete {{CleanName}} ==> resp:%+v",resp)
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	resp.Code = 0
+	resp.Message = "success"
+	logrus.Info("访问Delete{{CleanName}}，响应结果：",resp)
+	c.JSON(http.StatusOK, resp)
+}
+
+
+

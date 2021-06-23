@@ -1,0 +1,77 @@
+# 代码生成工具配置
+
+# 数据库连接配置
+[database]
+#db_host = "dev:26013b745b05@tcp(gz-cdb-pqp4a8vn.sql.tencentcdb.com:62331)"
+db_host = "root:xing*2019@tcp(127.0.0.1:3306)"
+#db_name = "wph_dev"
+db_name = "test"
+
+# 需要执行的代码生成任务列表
+[codegen]
+jobs = ["golang"]
+
+# 具体代码生成任务配置
+[java_entity]
+# 表结构元数据输入相关配置
+remove_table_prefix = []                      # 需要省略掉的表名前缀列表，生成的实体对象名省略掉此部分
+exclude_tables = []                           # 不需要生成的表名列表
+exclude_cols = []                             # 不需要生成的字段名列表
+# 代码生成模版中可用的全局变量配置
+package_name = "com.wanpinghui.prototype.entity.auto"   # 生成的代码文件的包名
+common_package_path = "com.wanpinghui.common" # 代码中引用的公共库包名或包路径
+ref_package_name = "com.wanpinghui.common"    # 代码中引用的其他包名
+# 代码生成模版文件配置
+tpl_path = "./tpl/mybatis/entity.mustache"    # 代码生成模版文件路径
+# 代码输出文件名相关配置
+output_path = "./output/mybatis/auto/"        # 输出目录
+file_prefix = ""                              # 输出文件名前缀
+file_postfix = ".java"                        # 输出文件名后缀
+
+[java_entity_wrapper]
+remove_table_prefix = []
+exclude_tables = []
+exclude_cols = []
+package_name = "com.wanpinghui.prototype.entity.manual"
+common_package_path = "com.wanpinghui.common"
+ref_package_name = "com.wanpinghui.prototype.entity.auto"
+tpl_path = "./tpl/mybatis/entityWrapper.mustache"
+output_path = "./output/mybatis/manual/"
+file_prefix = ""
+file_postfix = "Info.java"
+
+[java_entity_mapper]
+remove_table_prefix = []
+exclude_tables = []
+exclude_cols = []
+package_name = "com.wanpinghui.prototype.dao.jdbc"
+common_package_path = "com.wanpinghui.common"
+ref_package_name = "com.wanpinghui.prototype.entity.manual"
+tpl_path = "./tpl/mybatis/mapper.mustache"
+output_path = "./output/mybatis/jdbc/"
+file_prefix = "I"
+file_postfix = "Mapper.java"
+
+[golang]
+remove_table_prefix = ["t_base_","t_user_","t_product_","t_order_","t_flow_","t_report_","t_auth_","t_iot_"]
+exclude_tables = []
+exclude_cols = []
+package_name = "model"
+common_package_path = "git.wanpinghui.com/WPH/go_common/wph"
+ref_package_name = "wph"
+tpl_path = "./tpl/xorm/model.mustache"
+output_path = "./output/xorm/model/"
+file_prefix = ""
+file_postfix = ".go"
+
+[python]
+remove_table_prefix = []
+exclude_tables = []
+exclude_cols = ["id", "created_at", "updated_at", "deleted_at"]
+package_name = ""
+common_package_path = "app.models"
+ref_package_name = ""
+tpl_path = "./tpl/sqlalchemy/models.mustache"
+output_path = "./output/sqlalchemy/models/"
+file_prefix = ""
+file_postfix = ".py"
